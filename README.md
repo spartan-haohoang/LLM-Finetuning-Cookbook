@@ -2,7 +2,7 @@
 
 🔥 A hands-on, code-first collection of recipes for fine-tuning Large Language Models. 🔥
 
-This repository is not a polished library but a collection of practical, well-commented notebooks and scripts. The goal is to provide deep insights into the code and mechanics behind various LLM fine-tuning techniques, inspired by the fantastic work of practitioners like [Youssef Hosni](https://github.com/youssefHosni).
+This repository is not a polished library but a collection of practical, well-commented notebooks and scripts. The goal is to provide deep insights into the code and mechanics behind various LLM fine-tuning techniques
 
 ---
 
