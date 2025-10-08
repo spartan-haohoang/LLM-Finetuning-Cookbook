@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+.jupyter/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+.devcontainer/
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model checkpoints and data (don't include in image)
+*.pt
+*.pth
+*.bin
+*.ckpt
+models/
+checkpoints/
+data/
+datasets/
+outputs/
+runs/
+logs/
+
+# Hugging Face cache
+.cache/
+

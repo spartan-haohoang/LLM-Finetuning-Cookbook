@@ -80,52 +80,193 @@ A more advanced topic focused on improving a model's ability to "think" through 
 ## 📂 Project Structure
 
 ```
-
 LLM-Finetuning-Cookbook/
 │
 ├── 01-Full-Fine-Tuning/
-│   └── GPT-2-From-Scratch.ipynb
+│   ├── GPT-2-From-Scratch.ipynb
+│   └── README.md                      # Detailed guide for this section
 │
 ├── 02-PEFT/
-│   └── Falcon-7B-LoRA.ipynb
+│   ├── Falcon-7B-LoRA.ipynb
+│   └── README.md                      # LoRA, QLoRA techniques explained
 │
 ├── 03-Instruction-Tuning/
 │   ├── Summarization-FLAN-T5.ipynb
-│   └── Financial-Sentiment-OPT.ipynb
+│   ├── Financial-Sentiment-OPT.ipynb
+│   └── README.md                      # Instruction tuning best practices
 │
 ├── 04-Reasoning-Tuning/
-│   └── Math-Reasoning-Qwen-GRPO.ipynb
+│   ├── Math-Reasoning-Qwen-GRPO.ipynb
+│   └── README.md                      # Advanced reasoning techniques
 │
+├── .devcontainer/
+│   └── devcontainer.json              # VS Code Dev Container config
+│
+├── pyproject.toml                     # Poetry dependency management
+├── Dockerfile                         # Multi-stage Docker build
+├── docker-compose.yml                 # Container orchestration
+├── Makefile                          # Convenient commands
+├── .pre-commit-config.yaml           # Code quality hooks
 ├── .gitignore
+├── .dockerignore
+├── SETUP.md                          # 📖 Complete setup guide
+├── CONTRIBUTING.md                   # 🤝 Contribution guidelines
 ├── LICENSE
 └── README.md
-
-````
+```
 
 ---
 
 ## 🚀 Getting Started
 
-To run these notebooks, you'll need to set up your environment correctly.
+### Quick Start (3 Options)
+
+Choose your preferred setup method:
+
+#### 🔷 Option 1: Local Setup with Poetry (Recommended)
+
+```bash
+# Clone repository
+git clone https://github.com/your-username/LLM-Finetuning-Cookbook.git
+cd LLM-Finetuning-Cookbook
+
+# Install Poetry (if not already installed)
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install all dependencies
+make install-all
+
+# Start Jupyter Lab
+make jupyter
+```
+
+#### 🐳 Option 2: Docker Setup (Zero Configuration)
+
+```bash
+# Clone and start with Docker
+git clone https://github.com/your-username/LLM-Finetuning-Cookbook.git
+cd LLM-Finetuning-Cookbook
+
+# Build and run
+make docker-build
+make docker-up
+
+# Open http://localhost:8888
+```
+
+#### 💻 Option 3: VS Code Dev Containers (Best IDE Integration)
+
+1. Install Docker and the "Dev Containers" extension
+2. Open repository in VS Code
+3. Press `F1` → "Dev Containers: Reopen in Container"
+4. Everything is configured automatically!
+
+### Detailed Setup Instructions
+
+For comprehensive setup guides, troubleshooting, and advanced configurations, see:
+
+📖 **[SETUP.md](SETUP.md)** - Complete installation guide for all methods
 
 ### Prerequisites
 
-* Python 3.8+
-* `pip` or `conda` for package management
-* An NVIDIA GPU is highly recommended for training.
+* **Python 3.10+**
+* **Poetry** (for local setup)
+* **Docker** (for containerized setup)
+* **NVIDIA GPU** (highly recommended for training)
+* **CUDA 12.1+** (if using GPU)
 
-### Installation
+---
 
-1.  **Clone the repository:**
-    ```sh
-    git clone [https://github.com/your-username/LLM-Finetuning-Cookbook.git](https://github.com/your-username/LLM-Finetuning-Cookbook.git)
-    cd LLM-Finetuning-Cookbook
-    ```
-2.  **Install dependencies:**
-    Each notebook lists its specific dependencies at the top. A general `requirements.txt` might be added later. It's recommended to use a virtual environment.
-    ```sh
-    pip install -r requirements.txt # Coming soon! For now, install packages from the notebooks.
-    ```
+## 🎯 Selective Installation
+
+Don't need everything? Install only what you need:
+
+```bash
+# Core dependencies only
+make install
+
+# Add specific sections as needed
+make install-full-finetuning    # For 01-Full-Fine-Tuning
+make install-peft               # For 02-PEFT  
+make install-instruction-tuning # For 03-Instruction-Tuning
+make install-reasoning          # For 04-Reasoning-Tuning
+
+# Or combine multiple
+poetry install --with peft,instruction-tuning
+```
+
+---
+
+## 🛠️ Useful Commands
+
+```bash
+# Development
+make jupyter           # Start Jupyter Lab
+make format           # Format code with black & isort
+make lint             # Run linters
+make clean            # Clean up generated files
+
+# Docker
+make docker-build     # Build Docker image
+make docker-up        # Start containers
+make docker-down      # Stop containers
+make docker-shell     # Open shell in container
+
+# Maintenance
+make lock             # Update poetry.lock
+make update           # Update dependencies
+```
+
+---
+
+## 🏗️ Repository Design Patterns
+
+This repository follows modern best practices:
+
+### ✅ Dependency Management
+- **Poetry** with dependency groups for modular installations
+- Single `pyproject.toml` as source of truth
+- Locked dependencies for reproducibility
+
+### ✅ Containerization
+- Multi-stage Dockerfile (dev/prod)
+- Docker Compose for orchestration
+- VS Code Dev Containers for seamless development
+- GPU support with NVIDIA Docker
+
+### ✅ Code Quality
+- Pre-commit hooks (black, isort, flake8)
+- Automated formatting and linting
+- Type hints where applicable
+- Clean notebook outputs before commits
+
+### ✅ Documentation
+- Comprehensive README per section
+- Detailed setup guide (SETUP.md)
+- Contributing guidelines (CONTRIBUTING.md)
+- Inline comments in all notebooks
+
+### ✅ Professional Structure
+- Consistent notebook formatting
+- Modular dependencies
+- Easy CI/CD integration
+- Beginner to advanced friendly
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
+- How to add new notebooks
+- Code quality standards
+- Testing guidelines
+- Pull request process
+
+**Quick contribution setup:**
+```bash
+make setup-dev  # Install dev dependencies + pre-commit hooks
+```
 
 ---
 

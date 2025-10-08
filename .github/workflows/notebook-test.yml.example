@@ -1,0 +1,169 @@
+# Example GitHub Actions workflow for testing notebooks
+# Rename to .github/workflows/notebook-test.yml to enable
+
+name: Notebook Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      full-finetuning: ${{ steps.filter.outputs.full-finetuning }}
+      peft: ${{ steps.filter.outputs.peft }}
+      instruction-tuning: ${{ steps.filter.outputs.instruction-tuning }}
+      reasoning: ${{ steps.filter.outputs.reasoning }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            full-finetuning:
+              - '01-Full-Fine-Tuning/**'
+            peft:
+              - '02-PEFT/**'
+            instruction-tuning:
+              - '03-Instruction-Tuning/**'
+            reasoning:
+              - '04-Reasoning-Tuning/**'
+
+  test-peft:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.peft == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}-peft
+      
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --with peft
+      
+      - name: Lint notebooks
+        run: |
+          poetry run nbqa black 02-PEFT/ --check
+          poetry run nbqa isort 02-PEFT/ --check
+      
+      - name: Test notebook syntax
+        run: |
+          poetry run jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=600 \
+            02-PEFT/*.ipynb \
+            --output-dir=/tmp/
+      
+      # Optional: Upload artifacts
+      - name: Upload executed notebooks
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: executed-notebooks-peft
+          path: /tmp/*.ipynb
+
+  test-instruction-tuning:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.instruction-tuning == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+      
+      - name: Install dependencies
+        run: poetry install --with instruction-tuning
+      
+      - name: Test notebooks
+        run: |
+          poetry run jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=600 \
+            03-Instruction-Tuning/*.ipynb \
+            --output-dir=/tmp/
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+      
+      - name: Install dependencies
+        run: poetry install --with dev
+      
+      - name: Run black
+        run: poetry run black . --check
+      
+      - name: Run isort
+        run: poetry run isort . --check
+      
+      - name: Run flake8
+        run: poetry run flake8 .
+      
+      - name: Check notebook outputs are stripped
+        run: |
+          git diff --exit-code -- '*.ipynb' || \
+          (echo "Notebooks have outputs! Run 'make notebook-clean' before committing" && exit 1)
+
+  docker-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: llm-finetuning-cookbook:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Test Docker image
+        run: |
+          docker run --rm llm-finetuning-cookbook:test \
+            poetry run python -c "import torch; import transformers; print('OK')"
+
