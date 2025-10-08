@@ -78,3 +78,66 @@ A more advanced topic focused on improving a model's ability to "think" through 
 ---
 
 ## 📂 Project Structure
+
+```
+
+LLM-Finetuning-Cookbook/
+│
+├── 01-Full-Fine-Tuning/
+│   └── GPT-2-From-Scratch.ipynb
+│
+├── 02-PEFT/
+│   └── Falcon-7B-LoRA.ipynb
+│
+├── 03-Instruction-Tuning/
+│   ├── Summarization-FLAN-T5.ipynb
+│   └── Financial-Sentiment-OPT.ipynb
+│
+├── 04-Reasoning-Tuning/
+│   └── Math-Reasoning-Qwen-GRPO.ipynb
+│
+├── .gitignore
+├── LICENSE
+└── README.md
+
+````
+
+---
+
+## 🚀 Getting Started
+
+To run these notebooks, you'll need to set up your environment correctly.
+
+### Prerequisites
+
+* Python 3.8+
+* `pip` or `conda` for package management
+* An NVIDIA GPU is highly recommended for training.
+
+### Installation
+
+1.  **Clone the repository:**
+    ```sh
+    git clone [https://github.com/your-username/LLM-Finetuning-Cookbook.git](https://github.com/your-username/LLM-Finetuning-Cookbook.git)
+    cd LLM-Finetuning-Cookbook
+    ```
+2.  **Install dependencies:**
+    Each notebook lists its specific dependencies at the top. A general `requirements.txt` might be added later. It's recommended to use a virtual environment.
+    ```sh
+    pip install -r requirements.txt # Coming soon! For now, install packages from the notebooks.
+    ```
+
+---
+
+## 🙏 Acknowledgements
+
+A huge thank you to **Youssef Hosni** for his clear, detailed, and practical articles that form the inspiration for this repository. Please check out his work:
+
+* **GitHub**: [youssefHosni/Hands-On-LLM-Fine-Tuning](https://github.com/youssefHosni/Hands-On-LLM-Fine-Tuning)
+* **Medium**: [Youssef Hosni's Articles](https://youssef-hosni.medium.com/)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
