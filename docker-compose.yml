@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Full environment with all dependencies
+  jupyter-all:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: llm-finetuning-all
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/workspace
+      - jupyter-data:/root/.jupyter
+      - huggingface-cache:/root/.cache/huggingface
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    command: poetry run jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+
+  # Lightweight notebook server (core dependencies only)
+  jupyter-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    container_name: llm-finetuning-core
+    ports:
+      - "8889:8888"
+    volumes:
+      - .:/workspace
+      - jupyter-data:/root/.jupyter
+      - huggingface-cache:/root/.cache/huggingface
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    profiles:
+      - core
+
+volumes:
+  jupyter-data:
+  huggingface-cache:
+
+networks:
+  default:
+    name: llm-finetuning-network
+
